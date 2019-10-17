@@ -1,4 +1,4 @@
-##Docker-compose Nginx + Mysql + Php-fpm (несколько версий) + Xdebug
+## Docker-compose Nginx + Mysql + Php-fpm (несколько версий) + Xdebug
 
 Клонируем репозиторий, в корневой папке заупускам `docker-compose up --build`, в файле hosts прописываем домены
 
