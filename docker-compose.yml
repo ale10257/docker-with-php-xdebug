@@ -1,0 +1,53 @@
+version: '3'
+services:
+    php70:
+      build: ./images/php70
+      volumes:
+        - ./www:/var/www
+      environment:
+        XDEBUG_CONFIG: "remote_host=192.168.220.1 remote_enable=1 remote_autostart=off remote_handler=dbgp idekey=PHPSTORM remote_port=9009"
+      networks:
+        - internal
+      links:
+        - mysql
+    php71:
+      build: ./images/php71
+      volumes:
+        - ./www:/var/www
+      environment:
+        XDEBUG_CONFIG: "remote_host=192.168.220.1 remote_enable=1 remote_autostart=off remote_handler=dbgp idekey=PHPSTORM remote_port=9010"
+      networks:
+        - internal
+      links:
+        - mysql
+    nginx:
+      image: nginx
+      volumes:
+        - ./hosts:/etc/nginx/conf.d
+        - ./www:/var/www
+        - ./logs:/var/log/nginx
+      ports:
+        - "80:80"
+      links:
+        - php70
+        - php71
+      networks:
+        - internal
+    mysql:
+      image: mysql:5.7
+      ports:
+        - "3306:3306"
+      volumes:
+        - ./mysql/data:/var/lib/mysql
+      environment:
+        MYSQL_ROOT_PASSWORD: secret
+#      command: mysqld --sql_mode="" совместимость с 5.6 - нежелательная настройка для GROUP BY
+      networks:
+        - internal
+networks:
+  internal:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.220.0/28
