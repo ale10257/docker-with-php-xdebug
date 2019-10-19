@@ -5,7 +5,8 @@ services:
       volumes:
         - ./www:/var/www
       environment:
-        XDEBUG_CONFIG: "remote_host=192.168.220.1 remote_enable=1 remote_autostart=off remote_handler=dbgp idekey=PHPSTORM remote_port=9009"
+        XDEBUG_CONFIG: "remote_host=192.168.200.1 remote_enable=1"
+        PHP_IDE_CONFIG: "serverName=Docker"
       networks:
         - internal
       links:
@@ -15,7 +16,8 @@ services:
       volumes:
         - ./www:/var/www
       environment:
-        XDEBUG_CONFIG: "remote_host=192.168.220.1 remote_enable=1 remote_autostart=off remote_handler=dbgp idekey=PHPSTORM remote_port=9010"
+        XDEBUG_CONFIG: "remote_host=192.168.200.1 remote_enable=1"
+        PHP_IDE_CONFIG: "serverName=Docker"
       networks:
         - internal
       links:
@@ -28,11 +30,14 @@ services:
         - ./logs:/var/log/nginx
       ports:
         - "80:80"
-      links:
+      depends_on:
         - php70
         - php71
       networks:
-        - internal
+        internal:
+          aliases: # алиасы нужны если нужно общаться внутри сети между хостами. Например, если вы используете апи
+            - hello70.loc
+            - hello71.loc
     mysql:
       image: mysql:5.7
       ports:
