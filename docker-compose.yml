@@ -1,56 +1,53 @@
 version: '3'
 services:
-    php70:
-      build: ./images/php70
-      volumes:
-        - ./www:/var/www
-      environment:
-        XDEBUG_CONFIG: "remote_host=192.168.200.1 remote_enable=1"
-        PHP_IDE_CONFIG: "serverName=Docker"
-      networks:
-        - internal
-      links:
-        - mysql
-    php71:
+    php71-first:
       build: ./images/php71
       volumes:
         - ./www:/var/www
+        - ./aliases/php71/bash.bashrc:/etc/bash.bashrc
       environment:
-        XDEBUG_CONFIG: "remote_host=192.168.200.1 remote_enable=1"
-        PHP_IDE_CONFIG: "serverName=Docker"
+        XDEBUG_CONFIG: "remote_host=192.168.220.1 remote_enable=1 remote_autostart=off remote_handler=dbgp idekey=PHPSTORM remote_port=9008"
+        PHP_IDE_CONFIG: "serverName=first"
       networks:
-        - internal
-      links:
-        - mysql
-    nginx:
+        - test-network
+    php71-two:
+      build: ./images/php71
+      volumes:
+        - ./www:/var/www
+        - ./aliases/php71/bash.bashrc:/etc/bash.bashrc
+      environment:
+        XDEBUG_CONFIG: "remote_host=192.168.220.1 remote_enable=1 remote_autostart=off remote_handler=dbgp idekey=PHPSTORM remote_port=9009"
+        PHP_IDE_CONFIG: "serverName=two"
+      networks:
+        - test-network
+    nginx-test:
       image: nginx
       volumes:
         - ./hosts:/etc/nginx/conf.d
         - ./www:/var/www
         - ./logs:/var/log/nginx
       ports:
-        - "80:80"
+        - "8080:80"
       depends_on:
-        - php70
-        - php71
+        - php71-first
+        - php71-two
       networks:
-        internal:
-          aliases: # алиасы нужны если нужно общаться внутри сети между хостами. Например, если вы используете апи
-            - hello70.loc
-            - hello71.loc
-    mysql:
-      image: mysql:5.7
-      ports:
-        - "3306:3306"
-      volumes:
-        - ./mysql/data:/var/lib/mysql
-      environment:
-        MYSQL_ROOT_PASSWORD: secret
-#      command: mysqld --sql_mode="" совместимость с 5.6 - нежелательная настройка для GROUP BY
-      networks:
-        - internal
+        test-network:
+          aliases: # алиасы нужны если нужно общаться внутри сети между хостами. Например, если вы используете api
+            - hello-first.loc
+            - hello-two.loc
+#    mysql:
+#      image: mysql:5.7
+#      ports:
+#        - "3306:3306"
+#      volumes:
+#        - ./mysql/data:/var/lib/mysql
+#      environment:
+#        MYSQL_ROOT_PASSWORD: secret
+#      networks:
+#        - test-network
 networks:
-  internal:
+  test-network:
     driver: bridge
     ipam:
       driver: default

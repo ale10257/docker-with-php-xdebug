@@ -1,6 +1,7 @@
 FROM php:7.1-fpm
 
 RUN apt-get update && apt-get install -y \
+        git \
         curl \
         wget \
         libfreetype6-dev \
@@ -22,6 +23,10 @@ ADD ./php.ini /usr/local/etc/php/php.ini
 RUN wget https://getcomposer.org/installer -O - -q \
     | php -- --install-dir=/bin --filename=composer --quiet
 
+RUN usermod -u 1000 www-data && groupmod -g 1000 www-data
+
 WORKDIR /var/www
+
 USER 1000:1000
+
 CMD ["php-fpm"]
