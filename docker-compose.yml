@@ -6,7 +6,7 @@ services:
         - ./www:/var/www
         - ./aliases/php71/bash.bashrc:/etc/bash.bashrc
       environment:
-        XDEBUG_CONFIG: "remote_host=192.168.220.1 remote_enable=1 remote_autostart=off remote_handler=dbgp idekey=PHPSTORM remote_port=9008"
+        XDEBUG_CONFIG: "remote_host=192.168.220.1 remote_enable=1 remote_autostart=off  remote_port=9008"
         PHP_IDE_CONFIG: "serverName=first"
       networks:
         - test-network
@@ -16,7 +16,7 @@ services:
         - ./www:/var/www
         - ./aliases/php71/bash.bashrc:/etc/bash.bashrc
       environment:
-        XDEBUG_CONFIG: "remote_host=192.168.220.1 remote_enable=1 remote_autostart=off remote_handler=dbgp idekey=PHPSTORM remote_port=9009"
+        XDEBUG_CONFIG: "remote_host=192.168.220.1 remote_enable=1 remote_autostart=off  remote_port=9009"
         PHP_IDE_CONFIG: "serverName=two"
       networks:
         - test-network
