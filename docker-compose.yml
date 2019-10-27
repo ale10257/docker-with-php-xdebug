@@ -34,8 +34,8 @@ services:
       networks:
         test-network:
           aliases: # алиасы нужны если нужно общаться внутри сети между хостами. Например, если вы используете api
-            - hello-first.loc
-            - hello-two.loc
+            - first.loc
+            - two.loc
 #    mysql:
 #      image: mysql:5.7
 #      ports:
