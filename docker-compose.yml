@@ -1,7 +1,11 @@
 version: '3'
 services:
     php71-first:
-      build: ./images/php71
+      build:
+        context: ./images/php71
+        args:
+          - USER_ID
+          - GROUP_ID
       volumes:
         - ./www:/var/www
         - ./aliases/php71/bash.bashrc:/etc/bash.bashrc
@@ -11,7 +15,11 @@ services:
       networks:
         - test-network
     php71-two:
-      build: ./images/php71
+      build:
+        context: ./images/php71
+        args:
+          - USER_ID
+          - GROUP_ID
       volumes:
         - ./www:/var/www
         - ./aliases/php71/bash.bashrc:/etc/bash.bashrc
