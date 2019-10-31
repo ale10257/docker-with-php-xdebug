@@ -1,5 +1,4 @@
 version: '3'
-
 services:
   php-fpm:
     build:
@@ -12,7 +11,7 @@ services:
       - ./aliases/php71/bash.bashrc:/etc/bash.bashrc
     environment:
       XDEBUG_CONFIG: "remote_host=${IP} remote_enable=1  remote_port=9100"
-      PHP_IDE_CONFIG: "serverName=first"
+      PHP_IDE_CONFIG: "serverName=${IDE_SERVER_NAME}"
   nginx:
     image: nginx
     volumes:
@@ -21,7 +20,7 @@ services:
       - ./logs:/var/log/nginx
     ports:
       - "8080:80"
-    depends_on:
+    links:
       - php-fpm
   mysql:
     image: mysql:5.7
