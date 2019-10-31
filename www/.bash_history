@@ -1,2 +1,0 @@
-cdf
-php index.php 
