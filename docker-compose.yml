@@ -1,63 +1,33 @@
 version: '3'
+
 services:
-    php71-first:
-      build:
-        context: ./images/php71
-        args:
-          - USER_ID
-          - GROUP_ID
-      volumes:
-        - ./www:/var/www
-        - ./aliases/php71/bash.bashrc:/etc/bash.bashrc
-      environment:
-        XDEBUG_CONFIG: "remote_host=192.168.220.1 remote_enable=1 remote_autostart=off  remote_port=9008"
-        PHP_IDE_CONFIG: "serverName=first"
-      networks:
-        - test-network
-    php71-two:
-      build:
-        context: ./images/php71
-        args:
-          - USER_ID
-          - GROUP_ID
-      volumes:
-        - ./www:/var/www
-        - ./aliases/php71/bash.bashrc:/etc/bash.bashrc
-      environment:
-        XDEBUG_CONFIG: "remote_host=192.168.220.1 remote_enable=1 remote_autostart=off  remote_port=9009"
-        PHP_IDE_CONFIG: "serverName=two"
-      networks:
-        - test-network
-    nginx-test:
-      image: nginx
-      volumes:
-        - ./hosts:/etc/nginx/conf.d
-        - ./www:/var/www
-        - ./logs:/var/log/nginx
-      ports:
-        - "8080:80"
-      depends_on:
-        - php71-first
-        - php71-two
-      networks:
-        test-network:
-          aliases: # алиасы нужны если нужно общаться внутри сети между хостами. Например, если вы используете api
-            - first.loc
-            - two.loc
-#    mysql:
-#      image: mysql:5.7
-#      ports:
-#        - "3306:3306"
-#      volumes:
-#        - ./mysql/data:/var/lib/mysql
-#      environment:
-#        MYSQL_ROOT_PASSWORD: secret
-#      networks:
-#        - test-network
-networks:
-  test-network:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 192.168.220.0/28
+  php-fpm:
+    build:
+      context: ./images/php71
+      args:
+        - USER_ID
+        - GROUP_ID
+    volumes:
+      - ./www:/var/www
+      - ./aliases/php71/bash.bashrc:/etc/bash.bashrc
+    environment:
+      XDEBUG_CONFIG: "remote_host=${IP} remote_enable=1  remote_port=9100"
+      PHP_IDE_CONFIG: "serverName=first"
+  nginx:
+    image: nginx
+    volumes:
+      - ./hosts:/etc/nginx/conf.d
+      - ./www:/var/www
+      - ./logs:/var/log/nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - php-fpm
+  mysql:
+    image: mysql:5.7
+    ports:
+      - "33006:3306"
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
