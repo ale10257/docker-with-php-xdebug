@@ -18,20 +18,3 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-enable imagick \
     && pecl install xdebug \
     && docker-php-ext-enable xdebug
-
-ADD ./php.ini /usr/local/etc/php/php.ini
-
-RUN wget https://getcomposer.org/installer -O - -q \
-    | php -- --install-dir=/bin --filename=composer --quiet
-
-
-#RUN addgroup --gid 1000 --system alex \
-#  && adduser --uid 1000 --system --disabled-login --disabled-password --gid 1000 alex
-  
-RUN usermod -u 1000 www-data && groupmod -g 1000 www-data  
-
-WORKDIR /var/www
-
-USER 1000:1000
-
-CMD ["php-fpm"]
